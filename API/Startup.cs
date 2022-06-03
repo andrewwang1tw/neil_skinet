@@ -7,6 +7,7 @@ using API.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using API.Errors;
 using API.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace API
 {
@@ -63,6 +64,15 @@ namespace API
             // 57. 
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+
+            // 68. CORS
+            services.AddCors(opt => 
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyHeader().WithOrigins("https://localhost:4200");
+                });            
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +99,9 @@ namespace API
 
             app.UseRouting();            
             app.UseStaticFiles();
+
+            // 68. CORS
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
